@@ -37,7 +37,7 @@ def delete_and_upload(table_name,dict_data):
 
 
 if __name__ == '__main__':
-    games = get_games(2025)
+    games = get_games(2026)
     delete_and_upload('CollegeFootballData_raw',games)
 
 
