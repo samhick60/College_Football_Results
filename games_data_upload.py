@@ -17,7 +17,6 @@ supabase: Client = create_client(url, key)
 
 
 
-
 def get_games(year):
     headers = {"Authorization": f"Bearer {CFD_API_KEY}"}
     params = {"year": year, "classification" : "fbs"}  # you can add week, team, etc.
