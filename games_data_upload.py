@@ -7,13 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CFD_API_KEY=os.getenv("CFD_API_KEY")
-CFD_BASE_URL=os.getenv("CFD_BASE_URL")
+CFD_BASE_URL="https://api.collegefootballdata.com/games"
 
 #SupaBase Connection
 url = "https://mfgyhrqqlnojbgadscsf.supabase.co"
-key = "sb_secret_OlPGe7osOdprcMz6s8405g_QsL8o-vf"
-
-supabase: Client = create_client(url, key)
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(url, SUPABASE_KEY)
 
 
 
