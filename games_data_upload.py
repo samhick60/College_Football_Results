@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 #CollegeFootballData.com download information
 load_dotenv()
 
-
 CFD_API_KEY=os.getenv("CFD_API_KEY")
 CFD_BASE_URL="https://api.collegefootballdata.com/games"
 
