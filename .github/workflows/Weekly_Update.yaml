@@ -2,7 +2,7 @@ name: Weekly Supabase Data Upload
 
 on:
   schedule:
-    - cron: "0 12 * * 7"   # Every Sunday at 12:00 UTC
+    - cron: "0 12 * * 0"   # Every Sunday at 12:00 UTC
   workflow_dispatch:       # Allows manual runs
 
 jobs:
