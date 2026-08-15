@@ -92,6 +92,6 @@ if __name__ == '__main__':
     games = get_games(current_season, CFD_BASE_URL)
     bets = get_lines(current_season, betting_url, 'ESPN Bet')
     rankings = get_rankings(current_season, ranking_url)
-    delete_and_upload('CollegeFootballData_raw', games)
+    delete_and_upload('CollegeFootballData_current', games)
     delete_and_upload('BettingData_current',bets)
     delete_and_upload('RankingData_current', rankings)
