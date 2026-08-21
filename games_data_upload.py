@@ -39,7 +39,13 @@ def get_games(year, url):
 
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
-    return response.json()
+    res = response.json()
+    df = pd.DataFrame(res)
+    df['Snapshot_Date'] = today.isoformat()
+    df = df.fillna(0)
+    dictdf = df.to_dict("records")
+
+    return dictdf
 
 def get_lines(year, url, betProvider):
     headers = {"Authorization": f"Bearer {CFD_API_KEY}"}
@@ -52,9 +58,10 @@ def get_lines(year, url, betProvider):
     expanded = pd.json_normalize(df["lines"].explode())
     df = df.join(expanded)
     df = df.drop(columns=["lines"])
+    df['Snapshot_Date'] = today.isoformat()
     df = df.fillna(0)
-    dict = df.to_dict("records")
-    return dict
+    dictdf = df.to_dict("records")
+    return dictdf
 
 
 def get_rankings(year, url):
@@ -71,9 +78,10 @@ def get_rankings(year, url):
     df = df.join(expanded)
     df = df.drop(columns=["ranks"])
     df = df.drop(columns=["polls"])
+    df['Snapshot_Date'] = today.isoformat()
     df = df.fillna(0)
-    dict = df.to_dict("records")
-    return dict
+    dictdf = df.to_dict("records")
+    return dictdf
 
 
 
@@ -83,7 +91,6 @@ def delete_and_upload(table_name,dict_data):
     supabase.table(f"{table_name}").delete().neq("id", 0).execute()
 
     supabase.table(f"{table_name}").insert(dict_data).execute()
-
 
 #df.to_csv("C:/Users/samhi/OneDrive/Desktop/Hickman_Sports_Data/data2.csv")
 
