@@ -1,4 +1,3 @@
-from datetime import date
 from datetime import date, datetime
 import pandas as pd
 import requests
@@ -23,6 +22,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
 today = datetime.today()
+D1_Conferences = ["ACC", "Big 12", "Big Ten", "Pac-12", "SEC", "FBS Independents", "Mountain West"]
 
 def year_decider(date):
     if date > datetime(today.year, 8, 29):
@@ -71,15 +71,55 @@ def get_rankings(year, url):
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     res = response.json()
-    df = pd.DataFrame(res)
-    expanded = pd.json_normalize(df["polls"].explode())
-    df = df.join(expanded)
-    expanded = pd.json_normalize(df["ranks"].explode())
-    df = df.join(expanded)
-    df = df.drop(columns=["ranks"])
-    df = df.drop(columns=["polls"])
-    df['Snapshot_Date'] = today.isoformat()
+    if not res:
+        print("No rankings data returned.")
+        return []
+
+    all_rows = []
+
+    # Iterate through each week object
+    for week_obj in res:
+        season = week_obj.get("season")
+        week = week_obj.get("week")
+
+        # Iterate through polls for that week
+        for poll in week_obj.get("polls", []):
+            poll_name = poll.get("poll")
+
+            # Only keep AP Top 25
+            if poll_name not in ["AP Top 25",	"Playoff Committee Rankings"]:
+                continue
+
+            # Flatten rankings for this poll
+            for ranking in poll.get("ranks", []):
+                row = {
+                    "season": season,
+                    "week": week,
+                    "seasonType": week_obj.get("seasonType"),
+                    "poll": poll_name,
+                    "rank": ranking.get("rank"),
+                    "school": ranking.get("school"),
+                    "teamId": ranking.get("teamId"),
+                    "conference": ranking.get("conference"),
+                    "firstPlaceVotes": ranking.get("firstPlaceVotes"),
+                    "points": ranking.get("points"),
+                    "Snapshot_Date": today.isoformat()
+                }
+                all_rows.append(row)
+
+    # Convert to DataFrame
+    df = pd.DataFrame(all_rows)
+
+    # Filter to D1 conferences if desired
+    df = df[df["conference"].isin(D1_Conferences)]
+
+    # Remove duplicates (same team/week/poll)
+    df = df.drop_duplicates(subset=["poll", "season", "week", "school"])
+
+    # Fill nulls
     df = df.fillna(0)
+
+    # Convert to dict records for Supabase upload
     dictdf = df.to_dict("records")
     return dictdf
 
