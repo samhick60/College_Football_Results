@@ -93,6 +93,7 @@ def get_rankings(year, url):
             # Flatten rankings for this poll
             for ranking in poll.get("ranks", []):
                 row = {
+
                     "season": season,
                     "week": week,
                     "seasonType": week_obj.get("seasonType"),
