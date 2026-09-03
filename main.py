@@ -56,6 +56,7 @@ table_name = "currentteamswownership"
 
 dict_data = df.to_dict("records")
 
+
 supabase.table(f"{table_name}").insert(dict_data).execute()
 
 week = games_data_upload.week_decider(today)
