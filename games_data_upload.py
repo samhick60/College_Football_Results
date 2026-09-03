@@ -22,6 +22,8 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
 today = datetime.today()
+week0_start = datetime(today.year, 8, 29)
+week1_start = datetime(today.year, 9, 5)
 D1_Conferences = ["ACC", "Big 12", "Big Ten", "Pac-12", "SEC", "FBS Independents", "Mountain West"]
 
 def year_decider(date):
@@ -33,6 +35,10 @@ def year_decider(date):
 current_season = year_decider(today)
 
 
+def week_decider(date):
+    diff = (date-week0_start).days//7
+    return  diff
+
 def get_games(year, url):
     headers = {"Authorization": f"Bearer {CFD_API_KEY}"}
     params = {"year": year, "classification" : "fbs"}  # you can add week, team, etc.
@@ -43,9 +49,17 @@ def get_games(year, url):
     df = pd.DataFrame(res)
     df['Snapshot_Date'] = today.isoformat()
     df = df.fillna(0)
-    dictdf = df.to_dict("records")
+    df['id'] = df['id'].astype(int)
+    df['season'] = df['season'].astype(int)
+    df['awayPoints'] = df['awayPoints'].astype(int)
+    df['homePoints'] = df['homePoints'].astype(int)
+    df['week'] = df['week'].astype(int)
+    df['venueId'] = df['venueId'].astype(int)
+    df['homeId'] = df['homeId'].astype(int)
+    df['awayId'] = df['awayId'].astype(int)
+    df = df.to_dict("records")
 
-    return dictdf
+    return df
 
 def get_lines(year, url, betProvider):
     headers = {"Authorization": f"Bearer {CFD_API_KEY}"}
@@ -60,8 +74,16 @@ def get_lines(year, url, betProvider):
     df = df.drop(columns=["lines"])
     df['Snapshot_Date'] = today.isoformat()
     df = df.fillna(0)
-    dictdf = df.to_dict("records")
-    return dictdf
+    df['id'] = df['id'].astype(int)
+    df['season'] = df['season'].astype(int)
+    df['week'] = df['week'].astype(int)
+    df['homeTeamId'] = df['homeTeamId'].astype(int)
+    df['homeScore'] = df['homeScore'].astype(int)
+    df['awayTeamId'] = df['awayTeamId'].astype(int)
+    df['awayScore'] = df['awayScore'].astype(int)
+    df = df.to_dict("records")
+
+    return df
 
 
 def get_rankings(year, url):
@@ -133,13 +155,31 @@ def delete_and_upload(table_name,dict_data):
 
     supabase.table(f"{table_name}").insert(dict_data).execute()
 
+
+def update_week_team_ownership():
+    response = (
+        supabase.table("team_w_ownership")  # <-- your view name
+        .select("*")
+        .execute()
+    )
+    df = pd.DataFrame(response.data)
+    df['Week'] = week_decider(today)
+    dict_data = df.to_dict("records")
+    supabase.table("team_w_ownership").insert(dict_data).execute()
+    return
+
+'''
+df = get_lines(current_season, betting_url, 'DraftKings')
 #df.to_csv("C:/Users/samhi/OneDrive/Desktop/Hickman_Sports_Data/data2.csv")
+print(df.dtypes)
+'''
 
 
 if __name__ == '__main__':
     games = get_games(current_season, CFD_BASE_URL)
-    bets = get_lines(current_season, betting_url, 'ESPN Bet')
+    bets = get_lines(current_season, betting_url, 'DraftKings')
     rankings = get_rankings(current_season, ranking_url)
     delete_and_upload('CollegeFootballData_current', games)
     delete_and_upload('BettingData_current',bets)
     delete_and_upload('RankingData_current', rankings)
+

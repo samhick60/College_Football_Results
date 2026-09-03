@@ -13,8 +13,10 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
 response = (
-    supabase.table("currated_current_data")   # <-- your view name
+    supabase.table("curated_current_data")   # <-- your view name
             .select("*")
             .execute()
 )
 df = pd.DataFrame(response.data)
+
+print(df)
