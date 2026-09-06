@@ -1,0 +1,25 @@
+body {
+    background-color: #f9f9f9;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.container {
+    padding: 20px;
+}
+
+.title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+
+.filter-section {
+    text-align: center;
+    margin-top: 20px;
+}
