@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: college-football-results
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn Dash_app.app:server
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SUPABASE_KEY
+        sync: false

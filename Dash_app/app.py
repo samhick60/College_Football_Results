@@ -24,7 +24,7 @@ current_year = datetime.today().year
 load_dotenv()
 
 #API url, key, and client set up
-url = "https://mfgyhrqqlnojbgadscsf.supabase.co"
+url = os.getenv("SUPABASE_URL", "https://mfgyhrqqlnojbgadscsf.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
@@ -133,4 +133,5 @@ def update_tables(selected_week, selected_player):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8050))
+    app.run(host="0.0.0.0", port=port, debug=False)
