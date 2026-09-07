@@ -133,4 +133,4 @@ def update_tables(selected_week, selected_player):
 
 
 if __name__ == "__main__":
-    app.run_server(host="0.0.0.0", port=8080)
+    app.run(debug=True)
