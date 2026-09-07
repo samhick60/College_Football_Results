@@ -59,7 +59,7 @@ Table2 = (full_data[full_data['season'] == current_year]
           .filter(items=['homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week'] ))
 
 # Initialize Dash
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP,"/assets/style.css"])
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server  # for Flask integration later
 
 #Table/Graph Functions
@@ -133,4 +133,4 @@ def update_tables(selected_week, selected_player):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run_server(host="0.0.0.0", port=8080)
