@@ -36,6 +36,7 @@ current_season = year_decider(today)
 
 
 def week_decider(date):
+
     diff = (date-week0_start).days//7
     return  diff
 
