@@ -2,6 +2,7 @@ import dash
 
 from dash import Dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
+import numpy as np
 import plotly.express as px
 from datetime import date, datetime
 import pandas as pd
@@ -17,6 +18,7 @@ def week_decider(date):
     return  diff
 
 current_year = datetime.today().year
+current_week = week_decider(datetime.today())
 
 
 
@@ -47,16 +49,30 @@ weekly_points = pd.DataFrame(response_weekly_points.data)
 
 #Data Curation for Tables
 #Table 1: Current Points
-Table1 = (weekly_points[(weekly_points['season'] == current_year) & (weekly_points["player"] != "100 | Undrafted")]
-          .copy()
-          .groupby("player")["points"]
+
+
+Table1 = (weekly_points[(weekly_points['season'] == current_year) & (weekly_points["player"] != "100 | Undrafted")])
+
+
+
+
+
+
+Table1 =  (Table1.groupby("player")[["points","games_completed" ,"games_left"]]
           .sum()
           .reset_index()
-          .sort_values(by="points", ascending=False)
-          )
+          .sort_values(by="points", ascending=False))
+
 
 Table2 = (full_data[full_data['season'] == current_year]
-          .filter(items=['homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week'] ))
+          .filter(items=['startDate','homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week'] ))
+
+Table2['startDate'] = pd.to_datetime(Table2['startDate'], utc=True)
+Table2["startDate"] = Table2["startDate"].dt.tz_convert("America/Los_Angeles")
+Table2 = Table2.sort_values(by="startDate", ascending=True)
+Table2['startDate'] = Table2['startDate'].dt.strftime('%m/%d/%Y %I:%M %p')
+
+
 
 # Initialize Dash
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -68,7 +84,7 @@ def bootstrap_table(df):
     return dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, size="sm")
 
 
-current_week = week_decider(datetime.today())
+
 
 # Layout
 app.layout = html.Div(
