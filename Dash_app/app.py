@@ -93,20 +93,26 @@ app.layout = html.Div(
             className="row",
             children=[
                 html.H1("Weekly Matchups"),
-                html.H6("Pick the Week:"),
-                dcc.Dropdown(
-                    id="week-filter",
-                    options=[{"label": c, "value": c} for c in sorted(full_data["week"].unique())],
-                    value=current_week,
-                    clearable=True
-                ),
-                html.H6("Pick the Participant:"),
-                dcc.Dropdown(
-                    id="player-filter",
-                    options=[{"label": c, "value": c} for c in sorted(Table1["player"].unique())],
-                    value="1 | Sam",
-                    clearable=True
-                ),
+                dbc.Row([
+                    dbc.Col([
+                        html.H6("Pick the Week:"),
+                        dcc.Dropdown(
+                            id="week-filter",
+                            options=[{"label": c, "value": c} for c in sorted(full_data["week"].unique())],
+                            value=current_week,
+                            clearable=True
+                        )
+                    ], width=6),
+                    dbc.Col([
+                        html.H6("Pick the Participant:"),
+                        dcc.Dropdown(
+                            id="player-filter",
+                            options=[{"label": c, "value": c} for c in sorted(Table1["player"].unique())],
+                            value="1 | Sam",
+                            clearable=True
+                        )
+                    ], width=6)
+                ]),
                 html.H1(" "),
                 html.Div(id="table-container2", className="table-wrapper")
             ]
