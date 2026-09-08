@@ -150,6 +150,7 @@ app.layout = html.Div(
 def update_tables(selected_week, selected_player):
     filtered1 = Table1
     filtered2 = Table2[(Table2["week"] == selected_week) & ((Table2["homePart"] == selected_player) | (Table2["AwayPart"] == selected_player))]
+    filtered2 = filtered2.drop(columns='week')
 
     return bootstrap_table(filtered1),  bootstrap_table(filtered2)
 
