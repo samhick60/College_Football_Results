@@ -35,9 +35,13 @@ body {
 }
 
 .table-wrapper {
-    display: flex;
-    justify-content: center;
-    border: 15px solid #ccc;
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    border: 4px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .my-table {
