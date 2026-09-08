@@ -84,14 +84,14 @@ def bootstrap_table(df):
     return dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True, size="sm")
 
 
-
+full_data["Snapshot_Date"] = pd.to_datetime(full_data["Snapshot_Date"], utc=True).dt.tz_convert("America/Los_Angeles")
 
 # Layout
 app.layout = html.Div(
     className="container",
     children=[
         html.H1("Hickman College Football Challenge", className="title"),
-        html.H6("Last Refresh:" + str(full_data["Snapshot_Date"].max()), style={"text-align": "center"}),
+        html.H6("Last Refresh:" + str(full_data["Snapshot_Date"].dt.strftime('%m/%d/%Y %I:%M %p').max()), style={"text-align": "center"}),
 
         # Row 1
         html.Div(
