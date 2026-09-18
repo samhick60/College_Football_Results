@@ -47,6 +47,13 @@ response_weekly_points = (
          )
 weekly_points = pd.DataFrame(response_weekly_points.data)
 
+response_team_weekly = (
+        supabase.table("weekly_points_team_raw")
+            .select("*")
+        .execute()
+         )
+team_points = pd.DataFrame(response_team_weekly.data)
+
 
 
 #Data Curation for Tables
@@ -55,6 +62,7 @@ weekly_points = pd.DataFrame(response_weekly_points.data)
 
 Table1 = (weekly_points[(weekly_points['season'] == current_year) & (weekly_points["player"] != "100 | Undrafted")])
 
+undrafted_team_table = (team_points[(team_points['season'] == current_year) & (team_points["player"] == "100 | Undrafted")])
 
 
 
@@ -68,6 +76,13 @@ Table1 =  (Table1.groupby("player")[["points","games_completed" ,"games_left"]]
 
 Table2 = (full_data[full_data['season'] == current_year]
           .filter(items=['startDate','homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week', 'spread'] ))
+
+
+undrafted_team_table = (undrafted_team_table.filter(items=['team', 'points'])
+                        .groupby("team")["points"]
+                        .sum()
+                        .reset_index()
+                        .sort_values(by="points", ascending=False))
 
 Table2['startDate'] = pd.to_datetime(Table2['startDate'], utc=True)
 Table2["startDate"] = Table2["startDate"].dt.tz_convert("America/Los_Angeles")
@@ -135,8 +150,17 @@ app.layout = html.Div(
                 html.Div(id="table-container2", className="table-wrapper")
             ]
         ),
+        html.Div(
+            className="row",
+            children=[
+                html.H1("Undrafted Teams"),
 
-        # Example filter
+                html.H1(" "),
+                html.Div(id="table-container3", className="table-wrapper")
+            ]
+        ),
+
+
     ]
 )
 
@@ -146,6 +170,7 @@ app.layout = html.Div(
 @app.callback(
     Output("table-container1", "children"),
     Output("table-container2", "children"),
+    Output("table-container3", "children"),
     Input("week-filter", "value"),
     Input("player-filter", "value")
 )
@@ -153,8 +178,8 @@ def update_tables(selected_week, selected_player):
     filtered1 = Table1
     filtered2 = Table2[(Table2["week"] == selected_week) & ((Table2["homePart"] == selected_player) | (Table2["AwayPart"] == selected_player))]
     filtered2 = filtered2.drop(columns='week')
-
-    return bootstrap_table(filtered1),  bootstrap_table(filtered2)
+    filtered3 = undrafted_team_table
+    return bootstrap_table(filtered1),  bootstrap_table(filtered2), bootstrap_table(filtered3)
 
 
 
