@@ -18,8 +18,8 @@ ranking_url="https://api.collegefootballdata.com/rankings"
 
 #SupaBase Connection
 url = "https://mfgyhrqqlnojbgadscsf.supabase.co"
-SUPABASE_KEY = os.getenv("SUPABASE_SECRET_KEY")
-supabase: Client = create_client(url, SUPABASE_KEY)
+SUPABASE_SECRET_KEY = os.getenv("SUPABASE_SECRET_KEY")
+supabase: Client = create_client(url, SUPABASE_SECRET_KEY)
 
 today = datetime.today()
 week0_start = datetime(today.year, 8, 29)
