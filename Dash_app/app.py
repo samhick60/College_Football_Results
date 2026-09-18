@@ -31,10 +31,6 @@ url = os.getenv("SUPABASE_URL", "https://mfgyhrqqlnojbgadscsf.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
-print("SUPABASE_URL:", url)
-print("SUPABASE_KEY loaded:", SUPABASE_KEY is not None)
-print("SUPABASE_KEY starts with:", SUPABASE_KEY[:10] if SUPABASE_KEY else None)
-
 
 #Data pulls
 response_full = (
@@ -71,7 +67,7 @@ Table1 =  (Table1.groupby("player")[["points","games_completed" ,"games_left"]]
 
 
 Table2 = (full_data[full_data['season'] == current_year]
-          .filter(items=['startDate','homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week'] ))
+          .filter(items=['startDate','homePart', 'homeTeam','homePoints','homegamepoints', 'awaygamepoints', 'awayPoints' ,'awayTeam' ,'AwayPart', 'week', 'spread'] ))
 
 Table2['startDate'] = pd.to_datetime(Table2['startDate'], utc=True)
 Table2["startDate"] = Table2["startDate"].dt.tz_convert("America/Los_Angeles")
