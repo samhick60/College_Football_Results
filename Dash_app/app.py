@@ -25,10 +25,16 @@ current_week = week_decider(datetime.today())
 
 load_dotenv()
 
+
 #API url, key, and client set up
 url = os.getenv("SUPABASE_URL", "https://mfgyhrqqlnojbgadscsf.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
+
+print("SUPABASE_URL:", url)
+print("SUPABASE_KEY loaded:", SUPABASE_KEY is not None)
+print("SUPABASE_KEY starts with:", SUPABASE_KEY[:10] if SUPABASE_KEY else None)
+
 
 #Data pulls
 response_full = (
