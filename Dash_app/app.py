@@ -157,6 +157,7 @@ def update_tables(selected_week, selected_player):
     return bootstrap_table(filtered1),  bootstrap_table(filtered2)
 
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8050))
     app.run(host="0.0.0.0", port=port, debug=False)
