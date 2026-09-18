@@ -18,7 +18,7 @@ ranking_url="https://api.collegefootballdata.com/rankings"
 
 #SupaBase Connection
 url = "https://mfgyhrqqlnojbgadscsf.supabase.co"
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_KEY = os.getenv("SUPABASE_SECRET_KEY")
 supabase: Client = create_client(url, SUPABASE_KEY)
 
 today = datetime.today()
