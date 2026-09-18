@@ -27,5 +27,7 @@ jobs:
         env:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CFD_API_KEY: ${{ secrets.CFD_API_KEY }}
+
+
         run: |
           python games_data_upload.py
