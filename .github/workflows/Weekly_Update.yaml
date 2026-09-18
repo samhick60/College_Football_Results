@@ -25,7 +25,7 @@ jobs:
 
       - name: Run ingestion script
         env:
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CFD_API_KEY: ${{ secrets.CFD_API_KEY }}
         run: |
           python games_data_upload.py
